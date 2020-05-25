@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register & Login</title>
+</head>
+
+<body>
+  <label for="input-user">Usuarix</label>
+  <input type="text" name="input-user" id="input-user">
+
+  <label for="input-password">Password</label>
+  <input type="password" name="input-password" id="input-password">
+
+  <label for="validate-password">Confirme Password</label>
+  <input type="password" name="validate-password" id="validate-password">
+
+  <p id="result" style="color: red;"></p>
+
+  <button onclick="register()">Register</button>
+
+  <script>
+    function register() {
+      // Obtengo los elementos del HTML
+      const username = document.getElementById("input-user").value;
+      const password = document.getElementById("input-password").value;
+      const valPassword = document.getElementById("validate-password").value;
+      const resultP = document.getElementById("result");
+
+      // Creo el Body del POST con los datos para el registro
+      const userBody = JSON.stringify({
+        username: username,
+        password: password,
+        valPassword: valPassword
+      });
+      
+      // Creo el request
+      const xhr = new XMLHttpRequest();
+
+      xhr.onload = function () {
+        // Si el server valida el registro
+        if (this.status == 200) {
+          resultP.style.color = "darkgreen";
+          resultP.textContent = "Usuarix registradx";
+
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 2000);
+
+          // Si el server encuentra un problema
+        } else {
+          resultP.style.color = "red";
+          username.value = "";
+          password.value = "";
+          valPassword.value = "";
+          if (this.status == 400) resultP.textContent = "Porfavor complete todos los campos e intente nuevamente";
+          if (this.status == 409) resultP.textContent = "Usuario existente o no coincide la confirmación de password. Intentelo nuevamente";
+
+        }
+      }
+
+      xhr.open("POST", "/register");
+      xhr.setRequestHeader("Content-Type", "application/json");
+
+      xhr.send(userBody);
+    }
+  </script>
+</body>
+
+</html>
