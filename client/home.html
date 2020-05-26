@@ -40,17 +40,19 @@
             results.forEach(element => {
               const split = element.split(input);
               const li = document.createElement("li");
-              const strong = document.createElement("strong");
-              strong.innerText = input;
-              console.log(strong.innerText);
+              const strong = document.createElement("STRONG");
+              const bInput = document.createTextNode(input);
+              strong.appendChild(bInput);
               for (let i = 0; i < split.length-1; i++) {
                 const part = split[i];
-                li.innerText += part;
-                li.append(strong);                
+                const partial = document.createTextNode(part);
+                li.appendChild(partial);
+                li.appendChild(strong);                
               }
-              li.innerText += split[(split.length-1)];
+              const last = document.createTextNode(split[split.length-1]);
+              li.appendChild(last);
 
-              uList.append(li);
+              uList.appendChild(li);
             });
           }
         }
