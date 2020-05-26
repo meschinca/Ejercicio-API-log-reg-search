@@ -38,8 +38,18 @@
           console.log(results);
           if (results.length > 0) {
             results.forEach(element => {
+              const split = element.split(input);
               const li = document.createElement("li");
-              li.innerText = element;
+              const strong = document.createElement("strong");
+              strong.innerText = input;
+              console.log(strong.innerText);
+              for (let i = 0; i < split.length-1; i++) {
+                const part = split[i];
+                li.innerText += part;
+                li.append(strong);                
+              }
+              li.innerText += split[(split.length-1)];
+
               uList.append(li);
             });
           }
