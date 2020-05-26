@@ -1,11 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HOME</title>
 </head>
+
 <body>
-  <h1>HOLA</h1>
+  <label for="phrase-search">Buscador de frases famosas del cine</label>
+  <input type="text" name="phrase-search" id="phrase-search">
+  <div id="container"></div>
+
+  <script>
+    const phraseSearch = document.getElementById("phrase-search");
+    const divContainer = document.getElementById("container");
+    const uList = document.createElement("ul");
+    divContainer.append(uList);
+    const baseUrl = "/phrases?phrases=";
+
+
+
+    phraseSearch.addEventListener("keyup", () => {
+      uList.innerHTML = "";
+      const input = phraseSearch.value;
+      if (input.length>0) getResults(input);
+
+    });
+
+    function getResults(input) {
+      const xhr = new XMLHttpRequest();
+
+      xhr.onload = function () {
+
+        if (this.status === 200) {
+          const results = JSON.parse(this.responseText);
+          console.log(results);
+          if (results.length > 0) {
+            results.forEach(element => {
+              const li = document.createElement("li");
+              li.innerText = element;
+              uList.append(li);
+            });
+          }
+        }
+
+      }
+      xhr.open("GET", baseUrl + input);
+      xhr.send();
+
+    }
+  </script>
 </body>
+
 </html>

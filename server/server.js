@@ -106,7 +106,7 @@ app.get("/phrases", (req, res) => {
   getPhrases(phraseList => {
     if (req.query.phrases) {
       const results = phraseList.filter(item => item.toUpperCase().includes(req.query.phrases.toUpperCase()));
-      return res.json(results.slice(0, 5));
+      return res.status(200).json(results.slice(0, 5));
     }
   })
 })
