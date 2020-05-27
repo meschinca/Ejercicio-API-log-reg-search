@@ -9,57 +9,71 @@
 
 <body>
   <label for="phrase-search">Buscador de frases famosas del cine</label>
-  <input type="text" name="phrase-search" id="phrase-search">
+  <input type="text" name="phrase-search" id="phrase-search" size="50">
   <div id="container"></div>
 
   <script>
+    // Tomo (o creo) los elementos del DOM para trabajarlos
     const phraseSearch = document.getElementById("phrase-search");
     const divContainer = document.getElementById("container");
     const uList = document.createElement("ul");
     divContainer.append(uList);
+
+    // Armo el la base del URL para el endpoint
     const baseUrl = "/phrases?phrases=";
 
-
-
+    // Creo el listener para el ingreso de caracteres en el campo de búsqueda
     phraseSearch.addEventListener("keyup", () => {
-      uList.innerHTML = "";
-      const input = phraseSearch.value;
-      if (input.length>0) getResults(input);
-
-    });
-
-    function getResults(input) {
-      const xhr = new XMLHttpRequest();
-
-      xhr.onload = function () {
-
-        if (this.status === 200) {
-          const results = JSON.parse(this.responseText);
-          console.log(results);
-          if (results.length > 0) {
-            results.forEach(element => {
-              const split = element.split(input);
-              const li = document.createElement("li");
-              const strong = document.createElement("STRONG");
-              const bInput = document.createTextNode(input);
-              strong.appendChild(bInput);
-              for (let i = 0; i < split.length-1; i++) {
-                const part = split[i];
-                const partial = document.createTextNode(part);
-                li.appendChild(partial);
-                li.appendChild(strong);                
-              }
-              const last = document.createTextNode(split[split.length-1]);
-              li.appendChild(last);
-
-              uList.appendChild(li);
-            });
+      uList.innerHTML = ""; // Limpia los elementos de la lista desordenada
+      divContainer.removeAttribute("hidden"); // Revela el contenedor con la lista
+      const inputText = phraseSearch.value;
+      // Si hay texto en el campo de búsqueda...
+      if (inputText.length > 0) {
+        const xhr = new XMLHttpRequest(); // Creo el HttpRequest
+        // El listener cuando vuelva la respuesta de la búsqueda
+        xhr.onload = function () {
+          if (this.status === 200) {
+            getResults(inputText, JSON.parse(this.responseText)); // Llamo a la función para procesar los resultados
+          } else {
+            window.alert(`Error ${this.status}: por favor, vuelva a intentarlo nuevamente`)
           }
         }
-
+        xhr.open("GET", baseUrl + inputText);
+        xhr.send();
       }
-      xhr.open("GET", baseUrl + input);
-      xhr.send();
+    })
+
+    /**
+    * Realiza el pedido para la búsqueda y arma la lista de resultados
+    * @param {string} inputText El string que se usó como filtro de búsqueda
+    * @param {array} response Los resultados de búsqueda
+    */
+    function getResults(inputText, response) {
+      // Si hubo resultados, Los muestro como items en la lista desordenada    
+      console.log(response);
+      if (response.length > 0) {
+        response.forEach(element => {
+          const li = document.createElement("li");
+          // Preparo el texto para mostrar el parámetro de búsqueda en negrita
+          const split = element.split(inputText);
+          for (let i = 0; i < split.length - 1; i++) {
+            const partial = document.createTextNode(split[i]);
+            const bInputText = document.createTextNode(inputText);
+            const strong = document.createElement("STRONG");
+            strong.appendChild(bInputText);
+            li.appendChild(partial);
+            li.appendChild(strong);
+          }
+          li.appendChild(document.createTextNode(split[split.length - 1]));
+          // Meto los items dentro de la lista
+          uList.appendChild(li);
+          // Agrego un listener para que cuando se le haga click a un item de la lista, este aparezca en el campo de búsqueda y esconda la lista
+          li.addEventListener("click", function () {
+            divContainer.setAttribute("hidden", "true");
+            phraseSearch.value = this.innerText;
+          })
+        });
+      }
 
     }
   </script>
