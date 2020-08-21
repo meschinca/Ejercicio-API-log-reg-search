@@ -1,7 +1,7 @@
 {
-  "name": "server-login",
+  "name": "ejercicio-api-login-register-search",
   "version": "1.0.0",
-  "description": "Server Node + Express de registro y login",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "start": "node server/server.js"
@@ -10,5 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1"
-  }
+  },
+  "keywords": []
 }
